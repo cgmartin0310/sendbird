@@ -1,0 +1,35 @@
+services:
+  - type: web
+    name: sendbird-messaging-api
+    runtime: node
+    repo: https://github.com/cgmartin0310/sendbird
+    branch: main
+    buildCommand: npm run render-build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: DATABASE_URL
+        fromDatabase:
+          name: sendbird-messaging-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: LOG_LEVEL
+        value: info
+      # These need to be manually set in Render dashboard
+      - key: SENDBIRD_APP_ID
+        sync: false
+      - key: SENDBIRD_API_TOKEN
+        sync: false
+
+databases:
+  - name: sendbird-messaging-db
+    plan: free
+    databaseName: messaging_db
+    user: sendbird_user 
