@@ -8,7 +8,8 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "db:migrate": "ts-node src/scripts/migrate.ts",
-    "setup:system-user": "ts-node src/scripts/createSystemUser.ts"
+    "setup:system-user": "ts-node src/scripts/createSystemUser.ts",
+    "render-build": "./scripts/build.sh"
   },
   "keywords": [],
   "author": "",

@@ -9,7 +9,7 @@ import * as complianceController from '../controllers/complianceController';
 const router = Router();
 
 // Health check
-router.get('/health', (req: any, res: any) => {
+router.get('/health', (_req: any, res: any) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
