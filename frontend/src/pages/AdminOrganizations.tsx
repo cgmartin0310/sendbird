@@ -42,10 +42,12 @@ const AdminOrganizations = () => {
     setSuccess(null);
 
     try {
-      await api.post('/admin/organizations', {
-        name: formData.name,
-        complianceGroupId: formData.complianceGroupId ? parseInt(formData.complianceGroupId) : null
-      });
+      const payload: any = { name: formData.name };
+      if (formData.complianceGroupId) {
+        payload.complianceGroupId = parseInt(formData.complianceGroupId);
+      }
+      
+      await api.post('/admin/organizations', payload);
       
       setSuccess('Organization created successfully');
       setFormData({ name: '', complianceGroupId: '' });
