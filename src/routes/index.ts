@@ -5,6 +5,7 @@ import * as conversationController from '../controllers/conversationController';
 import * as patientController from '../controllers/patientController';
 import * as organizationController from '../controllers/organizationController';
 import * as complianceController from '../controllers/complianceController';
+import * as adminController from '../controllers/adminController';
 
 const router = Router();
 
@@ -99,6 +100,41 @@ router.post(
   patientController.addCareTeamMemberValidation,
   patientController.addCareTeamMember
 );
+
+// Admin routes
+router.get('/admin/dashboard', authenticate, authorize(['admin']), adminController.getDashboardStats);
+
+// Admin user management
+router.get('/admin/users', authenticate, authorize(['admin']), adminController.listUsers);
+router.post(
+  '/admin/users',
+  authenticate,
+  authorize(['admin']),
+  adminController.createUserValidation,
+  adminController.createUser
+);
+router.put('/admin/users/:id', authenticate, authorize(['admin']), adminController.updateUser);
+
+// Admin organization management
+router.get('/admin/organizations', authenticate, authorize(['admin']), adminController.listOrganizations);
+router.post(
+  '/admin/organizations',
+  authenticate,
+  authorize(['admin']),
+  adminController.createOrganizationValidation,
+  adminController.createOrganization
+);
+
+// Admin consent management
+router.get('/admin/consents', authenticate, authorize(['admin']), adminController.listConsents);
+router.post(
+  '/admin/consents',
+  authenticate,
+  authorize(['admin']),
+  adminController.createConsentValidation,
+  adminController.createConsent
+);
+router.delete('/admin/consents/:id', authenticate, authorize(['admin']), adminController.revokeConsent);
 
 // Webhook routes (no auth required)
 router.post('/webhooks/sendbird', (req: any, res: any) => {

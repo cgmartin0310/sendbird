@@ -33,6 +33,11 @@ const Layout = () => {
                   <ChatBubbleLeftRightIcon className="h-5 w-5 mr-1" />
                   Conversations
                 </Link>
+                {user?.role === 'admin' && (
+                  <Link to="/admin" className="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                    Admin
+                  </Link>
+                )}
               </div>
             </div>
             <div className="flex items-center">
