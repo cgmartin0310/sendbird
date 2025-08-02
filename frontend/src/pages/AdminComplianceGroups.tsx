@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { api } from '../config/api';
-import { ComplianceGroup } from '../types';
+import api from '../config/api';
+import type { ComplianceGroup } from '../types/index';
 
 export default function AdminComplianceGroups() {
   const [complianceGroups, setComplianceGroups] = useState<ComplianceGroup[]>([]);
