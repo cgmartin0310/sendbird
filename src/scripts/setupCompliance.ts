@@ -76,6 +76,7 @@ async function setupCompliance() {
     // 5. Create additional test users in the organization
     console.log('\n5. Creating additional test users...');
     const testUsers = [
+      { email: 'admin@healthcare.com', password: 'SecurePass123!', firstName: 'Admin', lastName: 'User', role: 'admin' },
       { email: 'doctor@healthcare.com', password: 'SecurePass123!', firstName: 'Dr. Sarah', lastName: 'Johnson', role: 'care_team_member' },
       { email: 'nurse@healthcare.com', password: 'SecurePass123!', firstName: 'Nancy', lastName: 'Williams', role: 'care_team_member' },
       { email: 'peer@healthcare.com', password: 'SecurePass123!', firstName: 'Peter', lastName: 'Smith', role: 'peer_support' }
@@ -99,6 +100,7 @@ async function setupCompliance() {
     console.log('\n📝 Summary:');
     console.log('   - Organization: Test Healthcare Organization');
     console.log('   - Users with access:');
+    console.log('     • admin@healthcare.com (Admin User) - ADMIN ROLE');
     console.log('     • test.user@healthcare.com (Test User)');
     console.log('     • doctor@healthcare.com (Dr. Sarah Johnson)');
     console.log('     • nurse@healthcare.com (Nancy Williams)');
