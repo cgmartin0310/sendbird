@@ -1,15 +1,24 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { App as SendbirdApp, SendBirdProvider } from '@sendbird/uikit-react';
+import SendbirdApp from '@sendbird/uikit-react/App';
 import '@sendbird/uikit-react/dist/index.css';
+import { useEffect, useState } from 'react';
 
 const Chat = () => {
   const { channelUrl } = useParams<{ channelUrl: string }>();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [isReady, setIsReady] = useState(false);
 
   // Get Sendbird App ID from environment variable
   const appId = import.meta.env.VITE_SENDBIRD_APP_ID;
+
+  useEffect(() => {
+    // Navigate to the channel once component is ready
+    if (channelUrl && isReady) {
+      // Channel navigation is handled by Sendbird UIKit
+    }
+  }, [channelUrl, isReady]);
 
   if (!appId) {
     return (
@@ -52,15 +61,8 @@ const Chat = () => {
           userId={userId}
           nickname={nickname}
           theme="light"
-          config={{
-            groupChannel: {
-              enableMention: true,
-              enableReactions: true,
-            }
-          }}
-          colorSet={{
-            primary: '#2563eb',
-          }}
+          showSearchIcon={false}
+          onReady={() => setIsReady(true)}
         />
       </div>
     </div>
