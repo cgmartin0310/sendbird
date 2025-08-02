@@ -10,6 +10,11 @@ if (!process.env.SENDBIRD_APP_ID) {
 // Initialize Sendbird SDK
 const sb = new SendBird({ appId: process.env.SENDBIRD_APP_ID });
 
+// Log warning if API token is missing
+if (!process.env.SENDBIRD_API_TOKEN) {
+  console.warn('WARNING: SENDBIRD_API_TOKEN is not set. API calls will fail!');
+}
+
 export const sendbirdConfig = {
   appId: process.env.SENDBIRD_APP_ID,
   apiToken: process.env.SENDBIRD_API_TOKEN || '',

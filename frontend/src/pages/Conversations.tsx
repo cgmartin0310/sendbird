@@ -23,6 +23,8 @@ const Conversations = () => {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [creating, setCreating] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     patientId: '',
@@ -52,6 +54,9 @@ const Conversations = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+    setCreating(true);
+    
     try {
       const response = await api.post('/conversations', {
         ...formData,
@@ -62,8 +67,19 @@ const Conversations = () => {
       if (response.data.sendbirdChannelUrl) {
         navigate(`/chat/${response.data.sendbirdChannelUrl}`);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating conversation:', error);
+      
+      // Extract error message
+      const errorMessage = error.response?.data?.error || 
+                          error.response?.data?.message || 
+                          'Failed to create conversation. Please try again.';
+      
+      const errorDetails = error.response?.data?.details;
+      
+      setError(errorDetails ? `${errorMessage} ${errorDetails}` : errorMessage);
+    } finally {
+      setCreating(false);
     }
   };
 
@@ -90,6 +106,17 @@ const Conversations = () => {
       {showCreateForm && (
         <div className="mt-6 bg-white shadow rounded-lg p-6">
           <h2 className="text-lg font-medium text-gray-900 mb-4">Create New Conversation</h2>
+          
+          {error && (
+            <div className="mb-4 bg-red-50 border-l-4 border-red-400 p-4">
+              <div className="flex">
+                <div className="ml-3">
+                  <p className="text-sm text-red-700">{error}</p>
+                </div>
+              </div>
+            </div>
+          )}
+          
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700">Title</label>
@@ -128,9 +155,10 @@ const Conversations = () => {
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
+                disabled={creating}
+                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Create Conversation
+                {creating ? 'Creating...' : 'Create Conversation'}
               </button>
             </div>
           </form>

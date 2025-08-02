@@ -175,8 +175,27 @@ export const createConversation = async (
         name: `${u.first_name} ${u.last_name}`
       }))
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error creating conversation:', error);
+    
+    // Check for Sendbird authentication errors
+    if (error.response?.status === 401) {
+      res.status(500).json({ 
+        error: 'Sendbird API authentication failed. Please check SENDBIRD_API_TOKEN configuration.',
+        details: 'Contact your administrator to configure Sendbird credentials.'
+      });
+      return;
+    }
+    
+    // Check for other Sendbird errors
+    if (error.response?.data) {
+      res.status(500).json({ 
+        error: 'Failed to create conversation',
+        details: error.response.data.message || error.response.data.error || 'Sendbird API error'
+      });
+      return;
+    }
+    
     res.status(500).json({ error: 'Failed to create conversation' });
   }
 };
