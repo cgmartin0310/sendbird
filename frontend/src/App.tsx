@@ -10,6 +10,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import AdminUsers from './pages/AdminUsers';
 import AdminOrganizations from './pages/AdminOrganizations';
 import AdminConsents from './pages/AdminConsents';
+import AdminComplianceGroups from './pages/AdminComplianceGroups';
 import PrivateRoute from './components/PrivateRoute';
 import Layout from './components/Layout';
 import './App.css';
@@ -31,6 +32,7 @@ function App() {
             <Route path="admin/users" element={<AdminUsers />} />
             <Route path="admin/organizations" element={<AdminOrganizations />} />
             <Route path="admin/consents" element={<AdminConsents />} />
+            <Route path="admin/compliance-groups" element={<AdminComplianceGroups />} />
           </Route>
         </Routes>
       </Router>
