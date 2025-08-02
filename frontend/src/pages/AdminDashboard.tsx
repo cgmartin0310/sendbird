@@ -101,16 +101,16 @@ const AdminDashboard = () => {
         <h2 className="text-lg font-medium text-gray-900 mb-4">Quick Actions</h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <Link
-            to="/admin/users/new"
+            to="/admin/users"
             className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
           >
-            Create New User
+            Manage Users
           </Link>
           <Link
-            to="/admin/organizations/new"
+            to="/admin/organizations"
             className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700"
           >
-            Create Organization
+            Manage Organizations
           </Link>
           <Link
             to="/admin/consents"
