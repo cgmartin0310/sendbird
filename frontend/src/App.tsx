@@ -8,6 +8,7 @@ import Conversations from './pages/Conversations';
 import Chat from './pages/Chat';
 import PrivateRoute from './components/PrivateRoute';
 import Layout from './components/Layout';
+import './App.css';
 
 function App() {
   return (

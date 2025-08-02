@@ -14,7 +14,7 @@ const Dashboard = () => {
           <div className="p-5">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <UserGroupIcon className="h-6 w-6 text-gray-400" />
+                <UserGroupIcon className="h-6 w-6 text-gray-400" style={{ height: '24px', width: '24px' }} />
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
