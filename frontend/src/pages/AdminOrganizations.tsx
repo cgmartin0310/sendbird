@@ -39,7 +39,7 @@ const AdminOrganizations = () => {
         api.get('/compliance-groups')
       ]);
       setOrganizations(orgsResponse.data.organizations);
-      setComplianceGroups(groupsResponse.data.groups);
+      setComplianceGroups(groupsResponse.data.complianceGroups || []);
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -142,7 +142,7 @@ const AdminOrganizations = () => {
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
               >
                 <option value="">Default Group (Auto-created)</option>
-                {complianceGroups.map((group) => (
+                {complianceGroups && complianceGroups.map((group) => (
                   <option key={group.id} value={group.id}>
                     {group.name} - {group.description}
                   </option>
