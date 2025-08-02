@@ -17,4 +17,7 @@ npm run db:migrate
 echo "Setting up initial compliance data..."
 npm run setup:compliance || echo "Compliance setup skipped (may already exist)"
 
+echo "Updating test user to admin role..."
+npm run update:test-user-admin || echo "User update skipped"
+
 echo "Build complete!" 
