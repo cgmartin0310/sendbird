@@ -23,4 +23,10 @@ npm run setup:compliance || echo "Compliance setup skipped (may already exist)"
 echo "Updating test user to admin role..."
 npm run update:test-user-admin || echo "User update skipped"
 
+echo "Setting up compliance groups..."
+npm run setup:compliance-groups || echo "Compliance groups setup skipped"
+
+echo "Adding consent attachment support..."
+npm run add:consent-attachments || echo "Consent attachment support skipped"
+
 echo "Build complete!" 

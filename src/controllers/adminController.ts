@@ -234,7 +234,8 @@ export const createConsentValidation = [
   body('organizationId').isInt().withMessage('Organization ID is required'),
   body('consentType').notEmpty().withMessage('Consent type is required'),
   body('consentDate').isISO8601().withMessage('Valid consent date is required'),
-  body('expiryDate').optional().isISO8601()
+  body('expiryDate').optional().isISO8601(),
+  body('specificOrganizationId').optional().isInt().withMessage('Specific organization ID must be an integer')
 ];
 
 export const createConsent = async (req: AuthRequest, res: Response): Promise<void> => {
@@ -245,19 +246,49 @@ export const createConsent = async (req: AuthRequest, res: Response): Promise<vo
       return;
     }
 
-    const { patientId, organizationId, consentType, consentDate, expiryDate } = req.body;
+    const { patientId, organizationId, consentType, consentDate, expiryDate, specificOrganizationId } = req.body;
+    const userId = req.user!.id;
+
+    // First check if this compliance group requires organization-specific consent
+    const complianceCheck = await pool.query(
+      `SELECT cg.name, cg.requires_consent, cg.requires_organization_consent 
+       FROM organizations o
+       JOIN compliance_groups cg ON o.compliance_group_id = cg.id
+       WHERE o.id = $1`,
+      [organizationId]
+    );
+
+    if (complianceCheck.rows.length === 0) {
+      res.status(400).json({ error: 'Invalid organization' });
+      return;
+    }
+
+    const complianceGroup = complianceCheck.rows[0];
+    
+    // Check if consent is required at all
+    if (!complianceGroup.requires_consent) {
+      res.status(400).json({ error: 'This compliance group does not require consent' });
+      return;
+    }
+
+    // Check if organization-specific consent is required
+    if (complianceGroup.requires_organization_consent && !specificOrganizationId) {
+      res.status(400).json({ error: 'This compliance group requires organization-specific consent' });
+      return;
+    }
 
     const result = await pool.query(
-      `INSERT INTO consents (patient_id, organization_id, consent_type, consent_date, expiry_date)
-       VALUES ($1, $2, $3, $4, $5)
+      `INSERT INTO consents (patient_id, organization_id, consent_type, consent_date, expiry_date, created_by, specific_organization_id)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
        ON CONFLICT (patient_id, organization_id, consent_type) 
        DO UPDATE SET 
          consent_date = EXCLUDED.consent_date,
          expiry_date = EXCLUDED.expiry_date,
+         specific_organization_id = EXCLUDED.specific_organization_id,
          is_active = true,
          updated_at = CURRENT_TIMESTAMP
-       RETURNING id, patient_id, organization_id, consent_type, consent_date, expiry_date, is_active`,
-      [patientId, organizationId, consentType, consentDate, expiryDate || null]
+       RETURNING *`,
+      [patientId, organizationId, consentType || complianceGroup.name, consentDate, expiryDate || null, userId, specificOrganizationId || null]
     );
 
     res.status(201).json({ consent: result.rows[0] });

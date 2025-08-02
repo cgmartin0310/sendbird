@@ -6,6 +6,7 @@ import * as patientController from '../controllers/patientController';
 import * as organizationController from '../controllers/organizationController';
 import * as complianceController from '../controllers/complianceController';
 import * as adminController from '../controllers/adminController';
+import * as uploadController from '../controllers/uploadController';
 
 const router = Router();
 
@@ -135,6 +136,11 @@ router.post(
   adminController.createConsent
 );
 router.delete('/admin/consents/:id', authenticate, authorize(['admin']), adminController.revokeConsent);
+
+// Upload routes
+router.post('/consents/attachments', authenticate, uploadController.uploadConsentAttachment);
+router.get('/consents/:consentId/attachments', authenticate, uploadController.getConsentAttachments);
+router.get('/attachments/:id/download', authenticate, uploadController.downloadAttachment);
 
 // Webhook routes (no auth required)
 router.post('/webhooks/sendbird', (req: any, res: any) => {
