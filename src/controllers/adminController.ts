@@ -158,14 +158,24 @@ export const createOrganization = async (req: AuthRequest, res: Response): Promi
     // Create default compliance group if none specified
     let groupId = complianceGroupId;
     if (!groupId) {
-      const defaultGroup = await pool.query(
-        `INSERT INTO compliance_groups (name, description)
-         VALUES ($1, $2)
-         ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name
-         RETURNING id`,
-        ['Default Group', 'Default compliance group']
+      // First try to find existing default group
+      const existingGroup = await pool.query(
+        'SELECT id FROM compliance_groups WHERE name = $1',
+        ['Default Group']
       );
-      groupId = defaultGroup.rows[0].id;
+      
+      if (existingGroup.rows.length > 0) {
+        groupId = existingGroup.rows[0].id;
+      } else {
+        // Create new default group
+        const defaultGroup = await pool.query(
+          `INSERT INTO compliance_groups (name, description)
+           VALUES ($1, $2)
+           RETURNING id`,
+          ['Default Group', 'Default compliance group']
+        );
+        groupId = defaultGroup.rows[0].id;
+      }
     }
 
     const result = await pool.query(

@@ -14,6 +14,9 @@ npm run build
 echo "Running database migrations..."
 npm run db:migrate
 
+echo "Adding unique constraints..."
+npm run add:unique-constraints || echo "Constraints update skipped"
+
 echo "Setting up initial compliance data..."
 npm run setup:compliance || echo "Compliance setup skipped (may already exist)"
 

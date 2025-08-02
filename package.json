@@ -11,6 +11,7 @@
     "setup:system-user": "ts-node src/scripts/createSystemUser.ts",
     "setup:compliance": "ts-node src/scripts/setupCompliance.ts",
     "update:test-user-admin": "ts-node src/scripts/updateTestUserToAdmin.ts",
+    "add:unique-constraints": "ts-node src/scripts/addUniqueConstraints.ts",
     "test:sendbird": "ts-node src/scripts/testSendbird.ts",
     "render-build": "./scripts/build.sh"
   },
