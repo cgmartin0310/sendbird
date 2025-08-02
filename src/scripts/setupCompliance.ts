@@ -82,7 +82,7 @@ async function setupCompliance() {
     ];
     
     for (const userData of testUsers) {
-      const bcrypt = require('bcrypt');
+      const bcrypt = require('bcryptjs');
       const hashedPassword = await bcrypt.hash(userData.password, 10);
       
       await pool.query(

@@ -2,7 +2,7 @@ import { Response } from 'express';
 import { AuthRequest } from '../middleware/auth';
 import { body, validationResult } from 'express-validator';
 import pool from '../config/database';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 // Admin-only endpoints
 export const getDashboardStats = async (req: AuthRequest, res: Response): Promise<void> => {
