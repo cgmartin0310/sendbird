@@ -9,6 +9,7 @@
     "start": "node dist/server.js",
     "db:migrate": "ts-node src/scripts/migrate.ts",
     "setup:system-user": "ts-node src/scripts/createSystemUser.ts",
+    "setup:compliance": "ts-node src/scripts/setupCompliance.ts",
     "test:sendbird": "ts-node src/scripts/testSendbird.ts",
     "render-build": "./scripts/build.sh"
   },

@@ -14,4 +14,7 @@ npm run build
 echo "Running database migrations..."
 npm run db:migrate
 
+echo "Setting up initial compliance data..."
+npm run setup:compliance || echo "Compliance setup skipped (may already exist)"
+
 echo "Build complete!" 
