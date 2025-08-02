@@ -18,17 +18,9 @@ interface Patient {
   last_name: string;
 }
 
-interface User {
-  id: number;
-  email: string;
-  first_name: string;
-  last_name: string;
-}
-
 const Conversations = () => {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [patients, setPatients] = useState<Patient[]>([]);
-  const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [formData, setFormData] = useState({

@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import SendbirdApp from '@sendbird/uikit-react/App';
+import { App as SendbirdApp, SendBirdProvider } from '@sendbird/uikit-react';
 import '@sendbird/uikit-react/dist/index.css';
 
 const Chat = () => {
@@ -52,13 +52,14 @@ const Chat = () => {
           userId={userId}
           nickname={nickname}
           theme="light"
-          channelUrl={channelUrl}
-          showSearchIcon={false}
-          replyType="QUOTE_REPLY"
-          messageListParams={{
-            prevResultSize: 20,
-            includeReactions: true,
-            includeMetaArray: true,
+          config={{
+            groupChannel: {
+              enableMention: true,
+              enableReactions: true,
+            }
+          }}
+          colorSet={{
+            primary: '#2563eb',
           }}
         />
       </div>
