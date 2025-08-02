@@ -1,10 +1,9 @@
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import SendbirdApp from '@sendbird/uikit-react/App';
 import '@sendbird/uikit-react/dist/index.css';
 
 const Chat = () => {
-  const { channelUrl } = useParams<{ channelUrl: string }>();
   const { user } = useAuth();
   const navigate = useNavigate();
 
