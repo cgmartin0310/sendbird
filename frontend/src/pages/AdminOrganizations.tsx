@@ -10,8 +10,15 @@ interface Organization {
   created_at: string;
 }
 
+interface ComplianceGroup {
+  id: number;
+  name: string;
+  description: string;
+}
+
 const AdminOrganizations = () => {
   const [organizations, setOrganizations] = useState<Organization[]>([]);
+  const [complianceGroups, setComplianceGroups] = useState<ComplianceGroup[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [formData, setFormData] = useState({
@@ -22,8 +29,23 @@ const AdminOrganizations = () => {
   const [success, setSuccess] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchOrganizations();
+    fetchData();
   }, []);
+
+  const fetchData = async () => {
+    try {
+      const [orgsResponse, groupsResponse] = await Promise.all([
+        api.get('/admin/organizations'),
+        api.get('/compliance-groups')
+      ]);
+      setOrganizations(orgsResponse.data.organizations);
+      setComplianceGroups(groupsResponse.data.groups);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const fetchOrganizations = async () => {
     try {
@@ -31,8 +53,6 @@ const AdminOrganizations = () => {
       setOrganizations(response.data.organizations);
     } catch (error) {
       console.error('Error fetching organizations:', error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -113,6 +133,21 @@ const AdminOrganizations = () => {
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 placeholder="e.g., City Hospital"
               />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Compliance Group (Optional)</label>
+              <select
+                value={formData.complianceGroupId}
+                onChange={(e) => setFormData({ ...formData, complianceGroupId: e.target.value })}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              >
+                <option value="">Default Group (Auto-created)</option>
+                {complianceGroups.map((group) => (
+                  <option key={group.id} value={group.id}>
+                    {group.name} - {group.description}
+                  </option>
+                ))}
+              </select>
             </div>
             <div className="flex justify-end space-x-3">
               <button
