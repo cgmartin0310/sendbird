@@ -12,6 +12,7 @@
     "setup:compliance": "ts-node src/scripts/setupCompliance.ts",
     "update:test-user-admin": "ts-node src/scripts/updateTestUserToAdmin.ts",
     "add:unique-constraints": "ts-node src/scripts/addUniqueConstraints.ts",
+    "quick:fix": "ts-node src/scripts/quickFix.ts",
     "test:sendbird": "ts-node src/scripts/testSendbird.ts",
     "render-build": "./scripts/build.sh"
   },

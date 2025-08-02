@@ -186,9 +186,25 @@ export const createOrganization = async (req: AuthRequest, res: Response): Promi
     );
 
     res.status(201).json({ organization: result.rows[0] });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error creating organization:', error);
-    res.status(500).json({ error: 'Failed to create organization' });
+    
+    // Check for unique constraint violation
+    if (error.code === '23505') {
+      res.status(400).json({ error: 'An organization with this name already exists' });
+      return;
+    }
+    
+    // Check for foreign key constraint violation
+    if (error.code === '23503') {
+      res.status(400).json({ error: 'Invalid compliance group ID' });
+      return;
+    }
+    
+    res.status(500).json({ 
+      error: 'Failed to create organization',
+      details: error.message 
+    });
   }
 };
 
