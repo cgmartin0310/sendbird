@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../config/api';
+import { useAuth } from '../contexts/AuthContext';
 
 interface Conversation {
   id: number;
@@ -32,6 +33,7 @@ const Conversations = () => {
     externalMembers: [] as { phoneNumber: string; name: string }[]
   });
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   useEffect(() => {
     fetchData();
@@ -61,7 +63,7 @@ const Conversations = () => {
       const response = await api.post('/conversations', {
         ...formData,
         patientId: parseInt(formData.patientId),
-        memberIds: [1, 2] // For demo, using hardcoded user IDs
+        memberIds: user?.id ? [user.id] : [] // Use current user's ID
       });
       
       if (response.data.sendbirdChannelUrl) {
