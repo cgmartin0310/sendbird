@@ -1,4 +1,5 @@
 import { useAuth } from '../contexts/AuthContext';
+import { Link } from 'react-router-dom';
 import { UserGroupIcon, ChatBubbleLeftRightIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
 
 const Dashboard = () => {
@@ -62,8 +63,8 @@ const Dashboard = () => {
       <div className="mt-8 bg-white shadow rounded-lg p-6">
         <h2 className="text-lg font-medium text-gray-900 mb-4">Quick Actions</h2>
         <div className="space-y-3">
-          <a href="/patients" className="block text-blue-600 hover:text-blue-800">→ View all patients</a>
-          <a href="/conversations" className="block text-blue-600 hover:text-blue-800">→ Start a conversation</a>
+          <Link to="/patients" className="block text-blue-600 hover:text-blue-800">→ View all patients</Link>
+          <Link to="/conversations" className="block text-blue-600 hover:text-blue-800">→ Start a conversation</Link>
         </div>
       </div>
     </div>
