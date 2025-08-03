@@ -24,7 +24,7 @@ router.get('/auth/profile', authenticate, authController.getProfile);
 router.post(
   '/conversations',
   authenticate,
-  authorize(['peer_support', 'care_team_member']),
+  authorize(['peer_support', 'care_team_member', 'admin']),
   conversationController.createConversationValidation,
   conversationController.createConversation
 );
