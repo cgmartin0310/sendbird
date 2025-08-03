@@ -60,11 +60,19 @@ const Conversations = () => {
     setCreating(true);
     
     try {
-      const response = await api.post('/conversations', {
+      // Debug logging
+      console.log('Current user:', user);
+      console.log('User ID:', user?.id);
+      
+      const payload = {
         ...formData,
         patientId: parseInt(formData.patientId),
         memberIds: user?.id ? [user.id] : [] // Use current user's ID
-      });
+      };
+      
+      console.log('Sending payload:', payload);
+      
+      const response = await api.post('/conversations', payload);
       
       if (response.data.sendbirdChannelUrl) {
         navigate(`/chat/${response.data.sendbirdChannelUrl}`);
