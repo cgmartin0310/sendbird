@@ -29,4 +29,7 @@ npm run setup:compliance-groups || echo "Compliance groups setup skipped"
 echo "Adding consent attachment support..."
 npm run add:consent-attachments || echo "Consent attachment support skipped"
 
+echo "Syncing users with Sendbird..."
+npm run sync:sendbird-users || echo "Sendbird user sync skipped"
+
 echo "Build complete!" 

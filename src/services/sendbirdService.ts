@@ -41,17 +41,36 @@ export class SendbirdService {
     metadata?: Record<string, any>
   ): Promise<any> {
     try {
-      const response = await axios.put(
-        `${this.apiUrl}/users/${userId}`,
-        {
-          user_id: userId,
-          nickname,
-          profile_url: profileUrl,
-          metadata
-        },
-        { headers: this.headers }
-      );
-      return response.data;
+      // First try to create the user
+      try {
+        const createResponse = await axios.post(
+          `${this.apiUrl}/users`,
+          {
+            user_id: userId,
+            nickname,
+            profile_url: profileUrl,
+            metadata
+          },
+          { headers: this.headers }
+        );
+        return createResponse.data;
+      } catch (createError: any) {
+        // If user already exists (400 with code 400202), try to update instead
+        if (createError.response?.status === 400 && createError.response?.data?.code === 400202) {
+          const updateResponse = await axios.put(
+            `${this.apiUrl}/users/${userId}`,
+            {
+              user_id: userId,
+              nickname,
+              profile_url: profileUrl,
+              metadata
+            },
+            { headers: this.headers }
+          );
+          return updateResponse.data;
+        }
+        throw createError;
+      }
     } catch (error: any) {
       console.error('Error creating/updating Sendbird user:', error.response?.data || error);
       throw error;
