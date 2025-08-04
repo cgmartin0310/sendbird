@@ -65,7 +65,24 @@ export default function AdminConsents() {
       
       setConsents(consentsRes.data.consents || []);
       console.log('Patients response:', patientsRes.data);
-      setPatients(patientsRes.data.patients || []);
+      console.log('First patient:', patientsRes.data.patients?.[0]);
+      
+      // Transform snake_case to camelCase for patients
+      const transformedPatients = (patientsRes.data.patients || []).map((patient: any) => ({
+        id: patient.id,
+        firstName: patient.first_name,
+        lastName: patient.last_name,
+        dateOfBirth: patient.date_of_birth,
+        phone: patient.phone_number,
+        email: patient.email,
+        medicalRecordNumber: patient.medical_record_number,
+        createdByOrganizationId: patient.created_by_organization_id,
+        externalUserId: patient.external_user_id,
+        createdAt: patient.created_at,
+        updatedAt: patient.updated_at
+      }));
+      
+      setPatients(transformedPatients);
       setOrganizations(orgsRes.data.organizations || []);
       setComplianceGroups(groupsRes.data.complianceGroups || []);
     } catch (error) {
