@@ -18,6 +18,7 @@
     "setup:compliance-groups": "ts-node src/scripts/setupComplianceGroups.ts",
     "add:consent-attachments": "ts-node src/scripts/addConsentAttachments.ts",
     "sync:sendbird-users": "ts-node src/scripts/syncSendbirdUsers.ts",
+    "create:test-users": "ts-node src/scripts/createTestUsers.ts",
     "render-build": "./scripts/build.sh"
   },
   "keywords": [],
