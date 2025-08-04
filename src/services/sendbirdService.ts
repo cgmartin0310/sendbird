@@ -48,7 +48,7 @@ export class SendbirdService {
           {
             user_id: userId,
             nickname,
-            profile_url: profileUrl,
+            profile_url: profileUrl || '',
             metadata
           },
           { headers: this.headers }
@@ -62,7 +62,7 @@ export class SendbirdService {
             {
               user_id: userId,
               nickname,
-              profile_url: profileUrl,
+              profile_url: profileUrl || '',
               metadata
             },
             { headers: this.headers }
@@ -240,7 +240,7 @@ export class SendbirdService {
       ? user.phone_number || 'External User'
       : `${user.first_name} ${user.last_name}`;
 
-    await this.createOrUpdateUser(sendbirdUserId, nickname, undefined, {
+    await this.createOrUpdateUser(sendbirdUserId, nickname, '', {
       database_user_id: userId,
       is_external: user.is_external,
       email: user.email

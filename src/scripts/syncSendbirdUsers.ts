@@ -27,7 +27,7 @@ async function syncAllUsers() {
         await sendbirdService.createOrUpdateUser(
           sendbirdUserId,
           nickname,
-          undefined,
+          '',  // profile_url is required by Sendbird
           {
             database_user_id: user.id,
             email: user.email,
