@@ -20,8 +20,11 @@ export default function UserSelector({ selectedUsers, onChange, patientId }: Use
   const [availableUsers, setAvailableUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
 
+  console.log('UserSelector rendering - patientId:', patientId);
+
   useEffect(() => {
     if (patientId) {
+      console.log('Fetching users for patient:', patientId);
       fetchUsers();
     }
   }, [patientId]);
@@ -29,8 +32,10 @@ export default function UserSelector({ selectedUsers, onChange, patientId }: Use
   const fetchUsers = async () => {
     setLoading(true);
     try {
+      console.log('Calling /api/users...');
       // Get all care team members and admins
       const response = await api.get('/users');
+      console.log('Users response:', response.data);
       const users = response.data.users || [];
       
       // Filter for care team members and admins (they can participate in conversations)
@@ -38,6 +43,7 @@ export default function UserSelector({ selectedUsers, onChange, patientId }: Use
         user.role === 'care_team_member' || user.role === 'admin'
       );
       
+      console.log('Eligible users:', eligibleUsers);
       setAvailableUsers(eligibleUsers);
     } catch (error) {
       console.error('Error fetching users:', error);
@@ -67,11 +73,11 @@ export default function UserSelector({ selectedUsers, onChange, patientId }: Use
   }
 
   return (
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">
+    <div className="mt-4 p-4 bg-blue-50 border rounded-lg">
+      <label className="block text-sm font-medium text-gray-900 mb-2">
         Add Team Members (Optional)
       </label>
-      <div className="space-y-2 max-h-48 overflow-y-auto border rounded-md p-3">
+      <div className="space-y-2 max-h-48 overflow-y-auto bg-white border rounded-md p-3">
         {availableUsers.length === 0 ? (
           <p className="text-sm text-gray-500">No other users available</p>
         ) : (

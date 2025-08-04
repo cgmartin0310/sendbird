@@ -158,11 +158,14 @@ const Conversations = () => {
               </select>
             </div>
             
-            <UserSelector
-              selectedUsers={selectedAdditionalUsers}
-              onChange={setSelectedAdditionalUsers}
-              patientId={formData.patientId}
-            />
+            {/* Team Member Selection */}
+            <div className="mt-4">
+              <UserSelector
+                selectedUsers={selectedAdditionalUsers}
+                onChange={setSelectedAdditionalUsers}
+                patientId={formData.patientId}
+              />
+            </div>
             
             <div className="flex justify-end space-x-3">
               <button
