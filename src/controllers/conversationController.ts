@@ -52,10 +52,11 @@ export const createConversation = async (
 
     const patient = patientResult.rows[0];
 
-    // Add creator to member list if not already included
-    const allMemberIds = memberIds.includes(creatorUserId) 
-      ? memberIds 
-      : [...memberIds, creatorUserId];
+    // Add creator to member list if not already included and remove duplicates
+    const uniqueMemberIds = [...new Set(memberIds)];
+    const allMemberIds = uniqueMemberIds.includes(creatorUserId) 
+      ? uniqueMemberIds 
+      : [...uniqueMemberIds, creatorUserId];
 
     // Check compliance for all internal members
     const complianceResults = await complianceService.checkMultipleUsersCompliance(

@@ -38,12 +38,17 @@ export default function UserSelector({ selectedUsers, onChange, patientId }: Use
       console.log('Users response:', response.data);
       const users = response.data.users || [];
       
+      // Get current user from localStorage
+      const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+      
       // Filter for care team members and admins (they can participate in conversations)
+      // Exclude the current user as they're automatically included
       const eligibleUsers = users.filter((user: User) => 
-        user.role === 'care_team_member' || user.role === 'admin'
+        (user.role === 'care_team_member' || user.role === 'admin') &&
+        user.id !== currentUser.id
       );
       
-      console.log('Eligible users:', eligibleUsers);
+      console.log('Eligible users (excluding current user):', eligibleUsers);
       setAvailableUsers(eligibleUsers);
     } catch (error) {
       console.error('Error fetching users:', error);
@@ -105,7 +110,10 @@ export default function UserSelector({ selectedUsers, onChange, patientId }: Use
         )}
       </div>
       <p className="mt-2 text-xs text-gray-500">
-        Note: Only users with consent for this patient will be able to participate
+        Note: You are automatically included in the conversation
+      </p>
+      <p className="text-xs text-gray-500">
+        Only users with consent for this patient will be able to participate
       </p>
     </div>
   );
