@@ -240,11 +240,13 @@ export class SendbirdService {
       ? user.phone_number || 'External User'
       : `${user.first_name} ${user.last_name}`;
 
-    await this.createOrUpdateUser(sendbirdUserId, nickname, '', {
-      database_user_id: userId,
-      is_external: user.is_external,
-      email: user.email
-    });
+          await this.createOrUpdateUser(sendbirdUserId, nickname, '', {
+        database_user_id: userId,
+        is_external: user.is_external,
+        email: user.email,
+        role: user.role,
+        organization_id: user.organization_id
+      });
 
     // Update the user's sendbird_user_id in the database
     await pool.query(
