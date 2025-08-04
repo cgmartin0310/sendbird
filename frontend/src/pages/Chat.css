@@ -1,0 +1,62 @@
+/* Sendbird Chat Styles */
+.sendbird-chat-container {
+  height: 100%;
+  position: relative;
+}
+
+/* Ensure the channel list is visible */
+.sendbird-channel-list {
+  width: 280px !important;
+}
+
+/* Fix for "No Channels" issue - force the current channel to show */
+.sendbird-conversation__wrap {
+  height: 100%;
+}
+
+/* Style adjustments for better UX */
+.sendbird-channel-header {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.sendbird-channel-header__right-icon {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Show member count in header */
+.sendbird-channel-header__subtitle {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+/* Ensure proper layout */
+.sendbird-app__wrap {
+  height: 100%;
+  display: flex;
+}
+
+.sendbird-app__conversation-wrap {
+  flex: 1;
+  height: 100%;
+}
+
+/* Member list styling */
+.sendbird-channel-settings__members-list {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+/* Add member button */
+.sendbird-channel-settings__members-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+/* Fix for single channel view */
+.sendbird-conversation--no-channel-list {
+  width: 100% !important;
+}

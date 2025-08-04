@@ -46,6 +46,33 @@ export const listUsers = async (req: AuthRequest, res: Response): Promise<void> 
   }
 };
 
+// List all users (for user selection in conversations)
+export const listAllUsers = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const result = await pool.query(
+      `SELECT id, email, first_name, last_name, role, organization_id
+       FROM users 
+       WHERE (is_external = false OR is_external IS NULL)
+       AND role IN ('care_team_member', 'admin')
+       ORDER BY first_name, last_name`
+    );
+    
+    res.json({ 
+      users: result.rows.map(user => ({
+        id: user.id,
+        email: user.email,
+        firstName: user.first_name,
+        lastName: user.last_name,
+        role: user.role,
+        organizationId: user.organization_id
+      }))
+    });
+  } catch (error) {
+    console.error('Error listing all users:', error);
+    res.status(500).json({ error: 'Failed to list users' });
+  }
+};
+
 export const createUserValidation = [
   body('email').isEmail().withMessage('Valid email is required'),
   body('password').isLength({ min: 8 }).withMessage('Password must be at least 8 characters'),

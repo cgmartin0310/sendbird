@@ -1,11 +1,13 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import SendbirdApp from '@sendbird/uikit-react/App';
 import '@sendbird/uikit-react/dist/index.css';
+import './Chat.css';
 
 const Chat = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { channelUrl } = useParams<{ channelUrl: string }>();
 
   // Get Sendbird App ID from environment variable
   const appId = import.meta.env.VITE_SENDBIRD_APP_ID;
@@ -45,11 +47,26 @@ const Chat = () => {
         </button>
         <h2 className="text-lg font-medium text-gray-900">Chat</h2>
       </div>
-      <div className="flex-1">
+      <div className="flex-1 sendbird-chat-container">
         <SendbirdApp
           appId={appId}
           userId={userId}
           nickname={nickname}
+          config={{
+            groupChannel: {
+              enableMention: true,
+              enableReactions: true,
+              enableTypingIndicator: true,
+              enableMessage: true,
+            },
+            userList: {
+              enableInvitation: true,
+            }
+          }}
+          stringSet={{
+            CHANNEL_LIST__TITLE: 'Conversations',
+          }}
+          channelUrl={channelUrl}
         />
       </div>
     </div>

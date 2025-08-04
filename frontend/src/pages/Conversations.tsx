@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../config/api';
 import { useAuth } from '../contexts/AuthContext';
+import UserSelector from '../components/UserSelector';
 
 interface Conversation {
   id: number;
@@ -32,6 +33,7 @@ const Conversations = () => {
     memberIds: [] as number[],
     externalMembers: [] as { phoneNumber: string; name: string }[]
   });
+  const [selectedAdditionalUsers, setSelectedAdditionalUsers] = useState<number[]>([]);
   const navigate = useNavigate();
   const { user } = useAuth();
 
@@ -67,7 +69,7 @@ const Conversations = () => {
       const payload = {
         ...formData,
         patientId: parseInt(formData.patientId),
-        memberIds: user?.id ? [user.id] : [] // Use current user's ID
+        memberIds: user?.id ? [user.id, ...selectedAdditionalUsers] : selectedAdditionalUsers
       };
       
       console.log('Sending payload:', payload);
@@ -155,10 +157,26 @@ const Conversations = () => {
                 ))}
               </select>
             </div>
+            
+            <UserSelector
+              selectedUsers={selectedAdditionalUsers}
+              onChange={setSelectedAdditionalUsers}
+              patientId={formData.patientId}
+            />
+            
             <div className="flex justify-end space-x-3">
               <button
                 type="button"
-                onClick={() => setShowCreateForm(false)}
+                onClick={() => {
+                  setShowCreateForm(false);
+                  setSelectedAdditionalUsers([]);
+                  setFormData({
+                    title: '',
+                    patientId: '',
+                    memberIds: [],
+                    externalMembers: []
+                  });
+                }}
                 className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
               >
                 Cancel

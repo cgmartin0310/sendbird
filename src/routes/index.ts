@@ -32,6 +32,9 @@ router.get('/conversations', authenticate, conversationController.listConversati
 router.get('/conversations/:id', authenticate, conversationController.getConversationDetails);
 router.post('/conversations/send-message', authenticate, conversationController.sendMessage);
 
+// User routes
+router.get('/users', authenticate, adminController.listAllUsers);
+
 // Patient routes
 router.post(
   '/patients',
