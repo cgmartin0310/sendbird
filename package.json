@@ -19,6 +19,9 @@
     "add:consent-attachments": "ts-node src/scripts/addConsentAttachments.ts",
     "sync:sendbird-users": "ts-node src/scripts/syncSendbirdUsers.ts",
     "create:test-users": "ts-node src/scripts/createTestUsers.ts",
+    "create:test-patients": "ts-node src/scripts/createTestPatients.ts",
+    "check:consent": "ts-node src/scripts/checkAndFixConsent.ts",
+    "create:consent": "ts-node src/scripts/createConsent.ts",
     "render-build": "./scripts/build.sh"
   },
   "keywords": [],
