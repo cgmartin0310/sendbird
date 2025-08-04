@@ -59,11 +59,12 @@ export default function AdminConsents() {
       const [consentsRes, patientsRes, orgsRes, groupsRes] = await Promise.all([
         api.get('/admin/consents'),
         api.get('/patients'),
-        api.get('/organizations'),
+        api.get('/admin/organizations'),
         api.get('/compliance-groups')
       ]);
       
       setConsents(consentsRes.data.consents || []);
+      console.log('Patients response:', patientsRes.data);
       setPatients(patientsRes.data.patients || []);
       setOrganizations(orgsRes.data.organizations || []);
       setComplianceGroups(groupsRes.data.complianceGroups || []);
