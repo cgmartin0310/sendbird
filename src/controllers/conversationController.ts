@@ -214,6 +214,7 @@ export const listConversations = async (
         c.sendbird_channel_url,
         c.title,
         c.created_at,
+        c.created_by_user_id,
         c.patient_id,
         p.first_name as patient_first_name,
         p.last_name as patient_last_name,
@@ -340,5 +341,60 @@ export const sendMessage = async (
   } catch (error) {
     console.error('Error sending message:', error);
     res.status(500).json({ error: 'Failed to send message' });
+  }
+};
+
+export const deleteConversation = async (
+  req: AuthRequest,
+  res: Response
+): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const userId = req.user!.id;
+    const userRole = req.user!.role;
+
+    // Get conversation details
+    const convResult = await pool.query(
+      `SELECT c.*, 
+              (SELECT COUNT(*) FROM conversation_members cm WHERE cm.conversation_id = c.id) as member_count
+       FROM conversations c 
+       WHERE c.id = $1`,
+      [id]
+    );
+
+    if (convResult.rows.length === 0) {
+      res.status(404).json({ error: 'Conversation not found' });
+      return;
+    }
+
+    const conversation = convResult.rows[0];
+
+    // Check authorization: only creator or admin can delete
+    if (conversation.created_by_user_id !== userId && userRole !== 'admin') {
+      res.status(403).json({ error: 'Only the conversation creator or an admin can delete this conversation' });
+      return;
+    }
+
+    // Delete from Sendbird first
+    try {
+      await sendbirdService.deleteChannel(conversation.sendbird_channel_url);
+    } catch (sendbirdError: any) {
+      console.error('Error deleting Sendbird channel:', sendbirdError);
+      // Continue with database deletion even if Sendbird fails
+    }
+
+    // Delete conversation members first (due to foreign key constraint)
+    await pool.query('DELETE FROM conversation_members WHERE conversation_id = $1', [id]);
+
+    // Delete the conversation
+    await pool.query('DELETE FROM conversations WHERE id = $1', [id]);
+
+    res.json({ 
+      success: true, 
+      message: 'Conversation deleted successfully' 
+    });
+  } catch (error) {
+    console.error('Error deleting conversation:', error);
+    res.status(500).json({ error: 'Failed to delete conversation' });
   }
 }; 

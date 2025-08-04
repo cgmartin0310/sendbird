@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { TrashIcon } from '@heroicons/react/24/outline';
 import api from '../config/api';
 import { useAuth } from '../contexts/AuthContext';
 import UserSelector from '../components/UserSelector';
@@ -9,6 +10,7 @@ interface Conversation {
   sendbird_channel_url: string;
   title: string;
   created_at: string;
+  created_by_user_id: number;
   patient_first_name: string;
   patient_last_name: string;
   is_compliant: boolean;
@@ -36,6 +38,7 @@ const Conversations = () => {
   const [selectedAdditionalUsers, setSelectedAdditionalUsers] = useState<number[]>([]);
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [deletingId, setDeletingId] = useState<number | null>(null);
 
   useEffect(() => {
     fetchData();
@@ -99,6 +102,23 @@ const Conversations = () => {
     navigate(`/chat/${channelUrl}`);
   };
 
+  const handleDelete = async (conversationId: number) => {
+    if (!window.confirm('Are you sure you want to delete this conversation? This action cannot be undone.')) {
+      return;
+    }
+
+    setDeletingId(conversationId);
+    try {
+      await api.delete(`/conversations/${conversationId}`);
+      // Remove from list
+      setConversations(conversations.filter(c => c.id !== conversationId));
+    } catch (error: any) {
+      setError(error.response?.data?.error || 'Failed to delete conversation');
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
   if (loading) {
     return <div className="flex justify-center items-center h-64">Loading...</div>;
   }
@@ -115,11 +135,21 @@ const Conversations = () => {
         </button>
       </div>
 
+      {error && !showCreateForm && (
+        <div className="mt-4 bg-red-50 border-l-4 border-red-400 p-4">
+          <div className="flex">
+            <div className="ml-3">
+              <p className="text-sm text-red-700">{error}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {showCreateForm && (
         <div className="mt-6 bg-white shadow rounded-lg p-6">
           <h2 className="text-lg font-medium text-gray-900 mb-4">Create New Conversation</h2>
           
-          {error && (
+          {error && showCreateForm && (
             <div className="mb-4 bg-red-50 border-l-4 border-red-400 p-4">
               <div className="flex">
                 <div className="ml-3">
@@ -199,34 +229,53 @@ const Conversations = () => {
       <div className="mt-8 bg-white shadow overflow-hidden sm:rounded-md">
         <ul className="divide-y divide-gray-200">
           {conversations.map((conversation) => (
-            <li key={conversation.id}>
-              <button
-                onClick={() => handleOpenChat(conversation.sendbird_channel_url)}
-                className="w-full px-4 py-4 sm:px-6 hover:bg-gray-50 text-left"
-              >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">{conversation.title}</p>
-                    <p className="text-sm text-gray-500">
-                      Patient: {conversation.patient_first_name} {conversation.patient_last_name}
-                    </p>
+            <li key={conversation.id} className="px-4 py-4 sm:px-6">
+              <div className="flex items-center justify-between">
+                <div
+                  onClick={() => handleOpenChat(conversation.sendbird_channel_url)}
+                  className="flex-1 cursor-pointer hover:opacity-75"
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">{conversation.title}</p>
+                      <p className="text-sm text-gray-500">
+                        Patient: {conversation.patient_first_name} {conversation.patient_last_name}
+                      </p>
+                    </div>
+                    <div className="flex items-center mr-4">
+                      {conversation.is_compliant ? (
+                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                          Compliant
+                        </span>
+                      ) : (
+                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                          Non-compliant
+                        </span>
+                      )}
+                    </div>
                   </div>
-                  <div className="flex items-center">
-                    {conversation.is_compliant ? (
-                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                        Compliant
-                      </span>
+                  <div className="mt-2 text-sm text-gray-500">
+                    Created: {new Date(conversation.created_at).toLocaleDateString()}
+                  </div>
+                </div>
+                {(conversation.created_by_user_id === user?.id || user?.role === 'admin') && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDelete(conversation.id);
+                    }}
+                    disabled={deletingId === conversation.id}
+                    className="ml-4 p-2 text-red-600 hover:text-red-900 hover:bg-red-50 rounded-md disabled:opacity-50"
+                    title="Delete conversation"
+                  >
+                    {deletingId === conversation.id ? (
+                      <span className="text-sm">Deleting...</span>
                     ) : (
-                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                        Non-compliant
-                      </span>
+                      <TrashIcon className="h-5 w-5" />
                     )}
-                  </div>
-                </div>
-                <div className="mt-2 text-sm text-gray-500">
-                  Created: {new Date(conversation.created_at).toLocaleDateString()}
-                </div>
-              </button>
+                  </button>
+                )}
+              </div>
             </li>
           ))}
         </ul>

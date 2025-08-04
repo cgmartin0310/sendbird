@@ -176,6 +176,21 @@ export class SendbirdService {
   }
 
   /**
+   * Delete a channel
+   */
+  async deleteChannel(channelUrl: string): Promise<void> {
+    try {
+      await axios.delete(
+        `${this.apiUrl}/group_channels/${channelUrl}`,
+        { headers: this.headers }
+      );
+    } catch (error: any) {
+      console.error('Error deleting channel:', error.response?.data || error);
+      throw error;
+    }
+  }
+
+  /**
    * List channels for a user
    */
   async listUserChannels(userId: string, limit: number = 100): Promise<any> {

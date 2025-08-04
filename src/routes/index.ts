@@ -31,6 +31,7 @@ router.post(
 router.get('/conversations', authenticate, conversationController.listConversations);
 router.get('/conversations/:id', authenticate, conversationController.getConversationDetails);
 router.post('/conversations/send-message', authenticate, conversationController.sendMessage);
+router.delete('/conversations/:id', authenticate, conversationController.deleteConversation);
 
 // User routes
 router.get('/users', authenticate, adminController.listAllUsers);
