@@ -45,9 +45,6 @@ export default function AdminConsents() {
       if (org && org.complianceGroupId) {
         const group = complianceGroups.find(g => g.id === org.complianceGroupId);
         setSelectedComplianceGroup(group || null);
-        if (group) {
-          setFormData(prev => ({ ...prev, consentType: group.name }));
-        }
       }
     } else {
       setSelectedComplianceGroup(null);
@@ -120,6 +117,7 @@ export default function AdminConsents() {
         consentData.specificOrganizationId = parseInt(formData.specificOrganizationId);
       }
 
+      console.log('Sending consent data:', consentData);
       const consentResponse = await api.post('/admin/consents', consentData);
       
       // Upload attachment if provided
@@ -151,7 +149,14 @@ export default function AdminConsents() {
       setShowCreateForm(false);
       fetchData();
     } catch (error: any) {
-      setError(error.response?.data?.error || 'Failed to create consent');
+      console.error('Create consent error:', error.response?.data);
+      if (error.response?.data?.errors) {
+        // Handle validation errors
+        const validationErrors = error.response.data.errors.map((e: any) => e.msg).join(', ');
+        setError(validationErrors);
+      } else {
+        setError(error.response?.data?.error || 'Failed to create consent');
+      }
     } finally {
       setCreating(false);
     }
@@ -261,6 +266,23 @@ export default function AdminConsents() {
                   </select>
                 </div>
 
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Consent Type</label>
+                  <select
+                    required
+                    value={formData.consentType}
+                    onChange={(e) => setFormData({ ...formData, consentType: e.target.value })}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  >
+                    <option value="">Select consent type</option>
+                    <option value="HIPAA Authorization">HIPAA Authorization</option>
+                    <option value="Treatment Consent">Treatment Consent</option>
+                    <option value="Information Sharing">Information Sharing</option>
+                    <option value="Research Participation">Research Participation</option>
+                    <option value="Marketing Communications">Marketing Communications</option>
+                  </select>
+                </div>
+
                 {selectedComplianceGroup && (
                   <div className="md:col-span-2 p-4 bg-blue-50 rounded-md">
                     <p className="text-sm text-blue-900">
@@ -351,6 +373,7 @@ export default function AdminConsents() {
                       specificOrganizationId: '',
                       attachmentFile: null
                     });
+                    setSelectedComplianceGroup(null);
                     setError(null);
                   }}
                   className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
