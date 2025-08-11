@@ -53,10 +53,17 @@ When creating a consent, check the browser console for:
 
 ### Validation Errors
 The form will now show specific validation errors like:
-- "Patient ID is required"
-- "Organization ID is required"
-- "Consent type is required"
-- "Valid consent date is required"
+- "patientId: Patient ID is required"
+- "organizationId: Organization ID is required"
+- "consentType: Consent type is required"
+- "consentDate: Valid consent date is required"
+- "expiryDate: Invalid value" (fixed - now optional fields are handled correctly)
+
+### Fixed: Null ExpiryDate Issue
+The form was sending `null` for empty expiry dates, causing validation errors. Now:
+- Empty optional fields are not sent in the request
+- Only fields with actual values are included in the payload
+- This applies to `expiryDate` and `specificOrganizationId`
 
 ## Testing After Deployment
 
