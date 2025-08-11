@@ -25,6 +25,7 @@
     "debug:patients": "ts-node src/scripts/debugPatients.ts",
     "add:created-by-column": "ts-node src/scripts/addCreatedByToConsents.ts",
     "fix:consent-now": "ts-node src/scripts/fixConsentNow.ts",
+    "fix:care-team-consent": "ts-node src/scripts/fixCareTeamConsent.ts",
     "render-build": "./scripts/build.sh"
   },
   "keywords": [],
