@@ -1,6 +1,6 @@
 import pool from '../config/database';
-import * as sendbirdService from '../services/sendbirdService';
-import * as complianceService from '../services/complianceService';
+import sendbirdService from '../services/sendbirdService';
+import complianceService from '../services/complianceService';
 
 async function debugConversationCreation() {
   console.log('🔍 Debugging Conversation Creation Process...\n');
@@ -45,18 +45,18 @@ async function debugConversationCreation() {
     );
     
     console.log('Compliance Results:');
-    complianceResults.forEach(result => {
+    complianceResults.forEach((result: any) => {
       console.log(`\nUser ID ${result.userId}:`);
       console.log(`  Compliant: ${result.isCompliant ? '✅' : '❌'}`);
       console.log(`  Reason: ${result.reason}`);
     });
     
-    const compliantMembers = complianceResults.filter(r => r.isCompliant);
-    const nonCompliantMembers = complianceResults.filter(r => !r.isCompliant);
+    const compliantMembers = complianceResults.filter((r: any) => r.isCompliant);
+    const nonCompliantMembers = complianceResults.filter((r: any) => !r.isCompliant);
     
     console.log(`\nSummary:`);
-    console.log(`  Compliant members: [${compliantMembers.map(m => m.userId).join(', ')}]`);
-    console.log(`  Non-compliant members: [${nonCompliantMembers.map(m => m.userId).join(', ')}]`);
+    console.log(`  Compliant members: [${compliantMembers.map((m: any) => m.userId).join(', ')}]`);
+    console.log(`  Non-compliant members: [${nonCompliantMembers.map((m: any) => m.userId).join(', ')}]`);
     
     // 3. Check Sendbird users
     console.log('\n3. Sendbird User Check:');
@@ -143,8 +143,11 @@ async function debugConversationCreation() {
     console.log('\n5. Testing Compliance Service Directly:');
     console.log('=========================================');
     for (const userId of memberIds) {
-      const isCompliant = await complianceService.checkUserCompliance(userId, patientId);
-      console.log(`User ID ${userId}: ${isCompliant ? '✅ COMPLIANT' : '❌ NON-COMPLIANT'}`);
+      const result = await complianceService.checkUserCompliance(userId, patientId);
+      console.log(`User ID ${userId}: ${result.isCompliant ? '✅ COMPLIANT' : '❌ NON-COMPLIANT'}`);
+      if (result.reason) {
+        console.log(`  Reason: ${result.reason}`);
+      }
     }
     
     console.log('\n6. ANALYSIS:');
