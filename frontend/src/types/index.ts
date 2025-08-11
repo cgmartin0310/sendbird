@@ -44,21 +44,27 @@ export interface ComplianceGroup {
 
 export interface Consent {
   id: number;
-  patientId: number;
-  organizationId: number;
-  specificOrganizationId?: number;
+  patientFirstName?: string;
+  patientLastName?: string;
+  organizationName?: string;
+  specificOrganizationName?: string;
   consentType?: string;
   consentDate: string;
   expiryDate?: string;
-  revoked: boolean;
-  revokedAt?: string;
-  createdBy: number;
-  createdAt: string;
-  updatedAt: string;
+  isActive: boolean;
+  createdBy?: number;
+  createdAt?: string;
+  updatedAt?: string;
+  attachments?: ConsentAttachment[];
+  // Legacy fields for compatibility
+  patientId?: number;
+  organizationId?: number;
+  specificOrganizationId?: number;
   patient?: Patient;
   organization?: Organization;
   specificOrganization?: Organization;
-  attachments?: ConsentAttachment[];
+  revoked?: boolean;
+  revokedAt?: string;
 }
 
 export interface ConsentAttachment {

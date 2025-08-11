@@ -60,7 +60,21 @@ export default function AdminConsents() {
         api.get('/compliance-groups')
       ]);
       
-      setConsents(consentsRes.data.consents || []);
+      // Transform consents data from snake_case and flat structure
+      console.log('Raw consents data:', consentsRes.data.consents);
+      const transformedConsents = (consentsRes.data.consents || []).map((consent: any) => ({
+        id: consent.id,
+        patientFirstName: consent.patient_first_name,
+        patientLastName: consent.patient_last_name,
+        organizationName: consent.organization_name,
+        consentType: consent.consent_type,
+        consentDate: consent.consent_date,
+        expiryDate: consent.expiry_date,
+        isActive: consent.is_active,
+        specificOrganizationName: consent.specific_organization_name
+      }));
+      console.log('Transformed consents:', transformedConsents);
+      setConsents(transformedConsents);
       console.log('Patients response:', patientsRes.data);
       console.log('First patient:', patientsRes.data.patients?.[0]);
       
@@ -404,22 +418,22 @@ export default function AdminConsents() {
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-lg font-medium text-gray-900">
-                      {consent.patient?.firstName} {consent.patient?.lastName}
+                      {consent.patientFirstName} {consent.patientLastName}
                     </h3>
                     <div className="mt-1 text-sm text-gray-500">
-                      <p>Organization: {consent.organization?.name}</p>
-                      {consent.specificOrganization && (
-                        <p>Shared with: {consent.specificOrganization.name}</p>
+                      <p>Organization: {consent.organizationName}</p>
+                      {consent.specificOrganizationName && (
+                        <p>Shared with: {consent.specificOrganizationName}</p>
                       )}
                       <p>Type: {consent.consentType}</p>
-                      <p>Date: {new Date(consent.consentDate).toLocaleDateString()}</p>
+                      <p>Date: {consent.consentDate ? new Date(consent.consentDate).toLocaleDateString() : 'N/A'}</p>
                       {consent.expiryDate && (
                         <p>Expires: {new Date(consent.expiryDate).toLocaleDateString()}</p>
                       )}
                     </div>
                   </div>
                   <div className="flex items-center space-x-3">
-                    {consent.revoked ? (
+                    {!consent.isActive ? (
                       <span className="px-3 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">
                         Revoked
                       </span>
