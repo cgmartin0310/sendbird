@@ -23,6 +23,8 @@
     "check:consent": "ts-node src/scripts/checkAndFixConsent.ts",
     "create:consent": "ts-node src/scripts/createConsent.ts",
     "debug:patients": "ts-node src/scripts/debugPatients.ts",
+    "add:created-by-column": "ts-node src/scripts/addCreatedByToConsents.ts",
+    "fix:consent-now": "ts-node src/scripts/fixConsentNow.ts",
     "render-build": "./scripts/build.sh"
   },
   "keywords": [],
