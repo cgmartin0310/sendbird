@@ -109,9 +109,13 @@ export default function AdminConsents() {
         patientId: parseInt(formData.patientId),
         organizationId: parseInt(formData.organizationId),
         consentType: formData.consentType,
-        consentDate: formData.consentDate,
-        expiryDate: formData.expiryDate || null
+        consentDate: formData.consentDate
       };
+      
+      // Only include expiryDate if it has a value
+      if (formData.expiryDate) {
+        consentData.expiryDate = formData.expiryDate;
+      }
 
       if (selectedComplianceGroup?.requires_organization_consent && formData.specificOrganizationId) {
         consentData.specificOrganizationId = parseInt(formData.specificOrganizationId);
@@ -152,7 +156,8 @@ export default function AdminConsents() {
       console.error('Create consent error:', error.response?.data);
       if (error.response?.data?.errors) {
         // Handle validation errors
-        const validationErrors = error.response.data.errors.map((e: any) => e.msg).join(', ');
+        const validationErrors = error.response.data.errors.map((e: any) => `${e.path}: ${e.msg}`).join(', ');
+        console.error('Validation errors:', error.response.data.errors);
         setError(validationErrors);
       } else {
         setError(error.response?.data?.error || 'Failed to create consent');
