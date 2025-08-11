@@ -294,11 +294,10 @@ export default function AdminConsents() {
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                   >
                     <option value="">Select consent type</option>
-                    <option value="HIPAA Authorization">HIPAA Authorization</option>
-                    <option value="Treatment Consent">Treatment Consent</option>
-                    <option value="Information Sharing">Information Sharing</option>
-                    <option value="Research Participation">Research Participation</option>
-                    <option value="Marketing Communications">Marketing Communications</option>
+                    <option value="General Medical">General Medical - Standard HIPAA compliance</option>
+                    <option value="Legal">Legal - Court-ordered or legal disclosure</option>
+                    <option value="Other">Other - Special circumstances</option>
+                    <option value="SUD Notes">SUD Notes - 42 CFR Part 2 protected</option>
                   </select>
                 </div>
 
