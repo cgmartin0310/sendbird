@@ -28,6 +28,7 @@
     "fix:care-team-consent": "ts-node src/scripts/fixCareTeamConsent.ts",
     "diagnose:consent": "ts-node src/scripts/diagnoseConsentMismatch.ts",
     "debug:conversation-creation": "ts-node src/scripts/debugConversationCreation.ts",
+    "check:sendbird-channel": "ts-node src/scripts/checkSendbirdChannel.ts",
     "render-build": "./scripts/build.sh"
   },
   "keywords": [],
