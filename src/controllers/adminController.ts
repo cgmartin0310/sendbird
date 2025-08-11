@@ -276,6 +276,31 @@ export const createConsent = async (req: AuthRequest, res: Response): Promise<vo
     const { patientId, organizationId, consentType, consentDate, expiryDate, specificOrganizationId } = req.body;
     const userId = req.user!.id;
 
+    // Handle General Medical consent (no organization required)
+    if (consentType === 'General Medical') {
+      const result = await pool.query(
+        `INSERT INTO consents (patient_id, organization_id, consent_type, consent_date, expiry_date, created_by, specific_organization_id)
+         VALUES ($1, NULL, $2, $3, $4, $5, NULL)
+         ON CONFLICT (patient_id, organization_id, consent_type) 
+         DO UPDATE SET 
+           consent_date = EXCLUDED.consent_date,
+           expiry_date = EXCLUDED.expiry_date,
+           is_active = true,
+           updated_at = CURRENT_TIMESTAMP
+         RETURNING *`,
+        [patientId, consentType, consentDate, expiryDate || null, userId]
+      );
+
+      res.status(201).json({ consent: result.rows[0] });
+      return;
+    }
+
+    // For non-General Medical consents, require organization
+    if (!organizationId) {
+      res.status(400).json({ error: 'Organization is required for non-General Medical consents' });
+      return;
+    }
+
     // First check if this compliance group requires organization-specific consent
     const complianceCheck = await pool.query(
       `SELECT cg.name, cg.requires_consent, cg.requires_organization_consent 

@@ -55,13 +55,25 @@ export class ComplianceService {
       }
 
       // Check if there's an active consent for this patient and organization
+      // Now supports both specific organization and general consent
       const consentResult = await pool.query(
-        `SELECT id, consent_type, expiry_date 
+        `SELECT id, consent_type, expiry_date, organization_id
          FROM consents 
          WHERE patient_id = $1 
-           AND organization_id = $2 
-           AND is_active = true 
-           AND (expiry_date IS NULL OR expiry_date > CURRENT_DATE)`,
+         AND is_active = true 
+         AND (expiry_date IS NULL OR expiry_date > CURRENT_DATE)
+         AND (
+           -- Specific organization consent
+           organization_id = $2
+           OR
+           -- General Medical consent (applies to all General Medical organizations)
+           (consent_type = 'General Medical' AND organization_id IS NULL 
+            AND EXISTS (
+              SELECT 1 FROM organizations o 
+              JOIN compliance_groups cg ON o.compliance_group_id = cg.id
+              WHERE o.id = $2 AND cg.name = 'General Medical'
+            ))
+         )`,
         [patientId, user.organization_id]
       );
 
@@ -73,10 +85,12 @@ export class ComplianceService {
         };
       }
 
+      const consent = consentResult.rows[0];
+      const consentType = consent.organization_id ? 'specific' : 'general';
       return {
         userId,
         isCompliant: true,
-        reason: 'Valid consent on file'
+        reason: `Valid ${consentType} consent on file: ${consent.consent_type}`
       };
     } catch (error) {
       console.error('Compliance check error:', error);

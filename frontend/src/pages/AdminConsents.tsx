@@ -51,6 +51,9 @@ export default function AdminConsents() {
     }
   }, [formData.organizationId, organizations, complianceGroups]);
 
+  // Check if General Medical is selected (for UI behavior)
+  const isGeneralMedical = formData.consentType === 'General Medical';
+
   const fetchData = async () => {
     try {
       const [consentsRes, patientsRes, orgsRes, groupsRes] = await Promise.all([
@@ -121,10 +124,14 @@ export default function AdminConsents() {
       // Create consent record
       const consentData: any = {
         patientId: parseInt(formData.patientId),
-        organizationId: parseInt(formData.organizationId),
         consentType: formData.consentType,
         consentDate: formData.consentDate
       };
+      
+      // For General Medical, don't include organizationId (it will be NULL)
+      if (!isGeneralMedical && formData.organizationId) {
+        consentData.organizationId = parseInt(formData.organizationId);
+      }
       
       // Only include expiryDate if it has a value
       if (formData.expiryDate) {
@@ -269,12 +276,20 @@ export default function AdminConsents() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Patient's Organization</label>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Patient's Organization
+                    {isGeneralMedical && <span className="text-gray-500 ml-1">(Not required for General Medical)</span>}
+                  </label>
                   <select
-                    required
+                    required={!isGeneralMedical}
+                    disabled={isGeneralMedical}
                     value={formData.organizationId}
                     onChange={(e) => setFormData({ ...formData, organizationId: e.target.value })}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    className={`mt-1 block w-full rounded-md shadow-sm focus:ring-blue-500 ${
+                      isGeneralMedical 
+                        ? 'border-gray-200 bg-gray-50 text-gray-500' 
+                        : 'border-gray-300 focus:border-blue-500'
+                    }`}
                   >
                     <option value="">Select an organization</option>
                     {organizations.map((org) => (
@@ -283,6 +298,11 @@ export default function AdminConsents() {
                       </option>
                     ))}
                   </select>
+                  {isGeneralMedical && (
+                    <p className="mt-1 text-sm text-blue-600">
+                      ✓ This consent will apply to all General Medical organizations
+                    </p>
+                  )}
                 </div>
 
                 <div>
