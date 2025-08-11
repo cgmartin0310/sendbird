@@ -1,15 +1,27 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import SendbirdApp from '@sendbird/uikit-react/App';
+import { useState, useEffect } from 'react';
+import { SendbirdProvider } from '@sendbird/uikit-react/SendbirdProvider';
+import ChannelList from '@sendbird/uikit-react/ChannelList';
+import Channel from '@sendbird/uikit-react/Channel';
 import '@sendbird/uikit-react/dist/index.css';
 import './Chat.css';
 
 const Chat = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { channelUrl } = useParams<{ channelUrl: string }>();
+  const [currentChannelUrl, setCurrentChannelUrl] = useState<string | undefined>(channelUrl);
 
   // Get Sendbird App ID from environment variable
   const appId = import.meta.env.VITE_SENDBIRD_APP_ID;
+
+  // Update current channel when URL changes
+  useEffect(() => {
+    if (channelUrl) {
+      setCurrentChannelUrl(channelUrl);
+    }
+  }, [channelUrl]);
 
   if (!appId) {
     return (
@@ -47,11 +59,38 @@ const Chat = () => {
         <h2 className="text-lg font-medium text-gray-900">Chat</h2>
       </div>
       <div className="flex-1 sendbird-chat-container">
-        <SendbirdApp
-          appId={appId}
-          userId={userId}
+        <SendbirdProvider 
+          appId={appId} 
+          userId={userId} 
           nickname={nickname}
-        />
+        >
+          <div className="sendbird-app-wrapper" style={{ height: '100%', display: 'flex' }}>
+            <div style={{ width: '320px', borderRight: '1px solid #e0e0e0' }}>
+              <ChannelList 
+                onChannelSelect={(channel: any) => {
+                  if (channel) {
+                    setCurrentChannelUrl(channel.url);
+                  }
+                }}
+                activeChannelUrl={currentChannelUrl}
+              />
+            </div>
+            <div style={{ flex: 1 }}>
+              {currentChannelUrl ? (
+                <Channel 
+                  channelUrl={currentChannelUrl}
+                  onChatHeaderActionClick={() => {
+                    // Optional: Handle header actions
+                  }}
+                />
+              ) : (
+                <div className="flex items-center justify-center h-full text-gray-500">
+                  Select a conversation to start chatting
+                </div>
+              )}
+            </div>
+          </div>
+        </SendbirdProvider>
       </div>
     </div>
   );
