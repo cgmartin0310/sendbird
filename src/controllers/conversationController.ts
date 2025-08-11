@@ -114,7 +114,8 @@ export const createConversation = async (
       name: title,
       userIds: sendbirdUserIds,
       customType: 'care_team_conversation',
-      data: channelData
+      data: channelData,
+      isDistinct: false  // Explicitly set to false to ensure unique channels for each conversation
     });
 
     // Save conversation to database

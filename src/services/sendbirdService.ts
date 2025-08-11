@@ -90,7 +90,7 @@ export class SendbirdService {
           custom_type: params.customType,
           data: JSON.stringify(params.data || {}),
           cover_url: params.coverUrl,
-          is_distinct: params.isDistinct ?? false,
+          is_distinct: params.isDistinct !== undefined ? params.isDistinct : false,  // Default to false to create unique channels
           is_public: false,
           is_super: false
         },
