@@ -298,6 +298,7 @@ export default function AdminConsents() {
                     <option value="Legal">Legal - Court-ordered or legal disclosure</option>
                     <option value="Other">Other - Special circumstances</option>
                     <option value="SUD Notes">SUD Notes - 42 CFR Part 2 protected</option>
+                    {/* Note: Interagency organizations don't require consent */}
                   </select>
                 </div>
 

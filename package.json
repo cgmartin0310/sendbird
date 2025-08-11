@@ -30,6 +30,9 @@
     "debug:conversation-creation": "ts-node src/scripts/debugConversationCreation.ts",
     "check:sendbird-channel": "ts-node src/scripts/checkSendbirdChannel.ts",
     "test:channel-creation": "ts-node src/scripts/testChannelCreation.ts",
+    "test:simplified-consents": "ts-node src/scripts/testSimplifiedConsents.ts",
+    "check:compliance-groups": "ts-node src/scripts/checkComplianceGroups.ts",
+    "fix:interagency": "ts-node src/scripts/fixInteragencyGroup.ts",
     "render-build": "./scripts/build.sh"
   },
   "keywords": [],
