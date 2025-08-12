@@ -5,7 +5,6 @@ import {
   UserGroupIcon, 
   ChatBubbleLeftRightIcon, 
   ShieldCheckIcon,
-  PlusIcon,
   EyeIcon,
   DocumentTextIcon,
   UserIcon,
