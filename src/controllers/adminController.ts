@@ -195,7 +195,12 @@ export const listOrganizations = async (req: AuthRequest, res: Response): Promis
 
 export const createOrganizationValidation = [
   body('name').notEmpty().withMessage('Organization name is required'),
-  body('complianceGroupId').optional().isInt()
+  body('complianceGroupId').optional().isInt().withMessage('Compliance group ID must be an integer')
+];
+
+export const updateOrganizationValidation = [
+  body('name').notEmpty().withMessage('Organization name is required'),
+  body('complianceGroupId').optional().isInt().withMessage('Compliance group ID must be an integer')
 ];
 
 export const createOrganization = async (req: AuthRequest, res: Response): Promise<void> => {
@@ -208,28 +213,13 @@ export const createOrganization = async (req: AuthRequest, res: Response): Promi
 
     const { name, complianceGroupId } = req.body;
 
-    // Create default compliance group if none specified
-    let groupId = complianceGroupId;
-    if (!groupId) {
-      // First try to find existing default group
-      const existingGroup = await pool.query(
-        'SELECT id FROM compliance_groups WHERE name = $1',
-        ['Default Group']
-      );
-      
-      if (existingGroup.rows.length > 0) {
-        groupId = existingGroup.rows[0].id;
-      } else {
-        // Create new default group
-        const defaultGroup = await pool.query(
-          `INSERT INTO compliance_groups (name, description)
-           VALUES ($1, $2)
-           RETURNING id`,
-          ['Default Group', 'Default compliance group']
-        );
-        groupId = defaultGroup.rows[0].id;
-      }
+    // Require compliance group selection
+    if (!complianceGroupId) {
+      res.status(400).json({ error: 'Compliance group is required' });
+      return;
     }
+    
+    let groupId = complianceGroupId;
 
     const result = await pool.query(
       `INSERT INTO organizations (name, compliance_group_id)
@@ -256,6 +246,66 @@ export const createOrganization = async (req: AuthRequest, res: Response): Promi
     
     res.status(500).json({ 
       error: 'Failed to create organization',
+      details: error.message 
+    });
+  }
+};
+
+export const updateOrganization = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(400).json({ errors: errors.array() });
+      return;
+    }
+
+    const organizationId = parseInt(req.params.id);
+    const { name, complianceGroupId } = req.body;
+
+    // Require compliance group selection
+    if (!complianceGroupId) {
+      res.status(400).json({ error: 'Compliance group is required' });
+      return;
+    }
+
+    // Check if organization exists
+    const existingOrg = await pool.query(
+      'SELECT id FROM organizations WHERE id = $1',
+      [organizationId]
+    );
+
+    if (existingOrg.rows.length === 0) {
+      res.status(404).json({ error: 'Organization not found' });
+      return;
+    }
+
+    // Update the organization
+    const result = await pool.query(
+      `UPDATE organizations 
+       SET name = $1, compliance_group_id = $2, updated_at = CURRENT_TIMESTAMP
+       WHERE id = $3
+       RETURNING id, name, compliance_group_id`,
+      [name, complianceGroupId, organizationId]
+    );
+
+    res.json({ organization: result.rows[0] });
+  } catch (error: any) {
+    console.error('Error updating organization:', error);
+    
+    // Check for unique constraint violation
+    if (error.code === '23505') {
+      res.status(400).json({ error: 'An organization with this name already exists' });
+      return;
+    }
+    
+    // Check for foreign key constraint violation
+    if (error.code === '23503') {
+      res.status(400).json({ error: 'Invalid compliance group ID' });
+      return;
+    }
+    
+    res.status(500).json({ 
+      error: 'Failed to update organization',
       details: error.message 
     });
   }

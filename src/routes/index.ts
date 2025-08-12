@@ -130,6 +130,13 @@ router.post(
   adminController.createOrganizationValidation,
   adminController.createOrganization
 );
+router.put(
+  '/admin/organizations/:id',
+  authenticate,
+  authorize(['admin']),
+  adminController.updateOrganizationValidation,
+  adminController.updateOrganization
+);
 
 // Admin consent management
 router.get('/admin/consents', authenticate, authorize(['admin']), adminController.listConsents);
