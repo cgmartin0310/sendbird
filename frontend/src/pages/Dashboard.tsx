@@ -84,7 +84,7 @@ const Dashboard = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <h1 className="text-3xl font-bold text-gray-900">Welcome, {user?.firstName}!</h1>
-      <p className="mt-2 text-gray-600">Healthcare Messaging Dashboard</p>
+      <p className="mt-2 text-gray-600">Goldie Dashboard</p>
 
       {/* Stats Cards */}
       <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-3">

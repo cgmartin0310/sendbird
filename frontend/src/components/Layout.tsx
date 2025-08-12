@@ -18,7 +18,13 @@ const Layout = () => {
           <div className="flex justify-between h-16">
             <div className="flex">
               <div className="flex-shrink-0 flex items-center">
-                <h1 className="text-xl font-bold text-blue-600">Healthcare Messaging</h1>
+                <Link to="/dashboard" className="flex items-center">
+                  <img 
+                    src="/goldie-full-white-background-768x185.png" 
+                    alt="Goldie" 
+                    className="h-8 w-auto"
+                  />
+                </Link>
               </div>
               <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
                 <Link to="/dashboard" className="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
