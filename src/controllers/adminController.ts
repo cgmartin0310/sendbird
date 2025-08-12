@@ -8,18 +8,44 @@ import bcrypt from 'bcryptjs';
 export const getDashboardStats = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     // Get counts for dashboard
-    const [users, patients, conversations, organizations] = await Promise.all([
+    const [users, patients, conversations, organizations, consents] = await Promise.all([
       pool.query('SELECT COUNT(*) as count FROM users WHERE NOT is_external'),
       pool.query('SELECT COUNT(*) as count FROM patients'),
       pool.query('SELECT COUNT(*) as count FROM conversations'),
-      pool.query('SELECT COUNT(*) as count FROM organizations')
+      pool.query('SELECT COUNT(*) as count FROM organizations'),
+      pool.query('SELECT COUNT(*) as count FROM consents WHERE is_active = true')
+    ]);
+
+    // Get recent activity
+    const [recentPatients, recentConversations] = await Promise.all([
+      pool.query(`
+        SELECT id, first_name, last_name, created_at 
+        FROM patients 
+        ORDER BY created_at DESC 
+        LIMIT 5
+      `),
+      pool.query(`
+        SELECT c.id, c.title, c.created_at, c.sendbird_channel_url,
+               p.first_name as patient_first_name, p.last_name as patient_last_name
+        FROM conversations c
+        LEFT JOIN patients p ON c.patient_id = p.id
+        ORDER BY c.created_at DESC 
+        LIMIT 5
+      `)
     ]);
 
     res.json({
-      users: parseInt(users.rows[0].count),
-      patients: parseInt(patients.rows[0].count),
-      conversations: parseInt(conversations.rows[0].count),
-      organizations: parseInt(organizations.rows[0].count)
+      stats: {
+        users: parseInt(users.rows[0].count),
+        patients: parseInt(patients.rows[0].count),
+        conversations: parseInt(conversations.rows[0].count),
+        organizations: parseInt(organizations.rows[0].count),
+        activeConsents: parseInt(consents.rows[0].count)
+      },
+      recentActivity: {
+        patients: recentPatients.rows,
+        conversations: recentConversations.rows
+      }
     });
   } catch (error) {
     console.error('Error fetching dashboard stats:', error);

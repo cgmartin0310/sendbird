@@ -108,6 +108,7 @@ router.post(
 
 // Admin routes
 router.get('/admin/dashboard', authenticate, authorize(['admin']), adminController.getDashboardStats);
+router.get('/dashboard/stats', authenticate, adminController.getDashboardStats);
 
 // Admin user management
 router.get('/admin/users', authenticate, authorize(['admin']), adminController.listUsers);
