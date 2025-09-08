@@ -21,7 +21,12 @@ const AdminDashboard = () => {
   const fetchStats = async () => {
     try {
       const response = await api.get('/admin/dashboard');
-      setStats(response.data);
+      // Extract stats from the nested response structure
+      if (response.data && response.data.stats) {
+        setStats(response.data.stats);
+      } else {
+        console.error('Unexpected response structure:', response.data);
+      }
     } catch (error) {
       console.error('Error fetching dashboard stats:', error);
     } finally {
