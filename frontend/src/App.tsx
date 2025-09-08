@@ -13,6 +13,7 @@ import AdminConsents from './pages/AdminConsents';
 import AdminComplianceGroups from './pages/AdminComplianceGroups';
 import UserDebug from './pages/UserDebug';
 import UserDirectory from './pages/UserDirectory';
+import Profile from './pages/Profile';
 import PrivateRoute from './components/PrivateRoute';
 import Layout from './components/Layout';
 import './App.css';
@@ -27,6 +28,7 @@ function App() {
           <Route path="/" element={<PrivateRoute><Layout /></PrivateRoute>}>
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard />} />
+            <Route path="profile" element={<Profile />} />
             <Route path="patients" element={<Patients />} />
             <Route path="conversations" element={<Conversations />} />
             <Route path="chat/:channelUrl" element={<Chat />} />

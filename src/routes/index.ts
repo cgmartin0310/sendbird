@@ -19,6 +19,7 @@ router.get('/health', (_req: any, res: any) => {
 router.post('/auth/register', authController.registerValidation, authController.register);
 router.post('/auth/login', authController.loginValidation, authController.login);
 router.get('/auth/profile', authenticate, authController.getProfile);
+router.post('/auth/change-password', authenticate, authController.changePasswordValidation, authController.changePassword);
 
 // Conversation routes
 router.post(

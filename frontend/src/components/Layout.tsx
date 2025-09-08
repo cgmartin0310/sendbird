@@ -1,15 +1,38 @@
+import { useState, useRef, useEffect } from 'react';
 import { Outlet, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { HomeIcon, UserGroupIcon, ChatBubbleLeftRightIcon, ArrowRightOnRectangleIcon, UsersIcon } from '@heroicons/react/24/outline';
+import { 
+  HomeIcon, 
+  UserGroupIcon, 
+  ChatBubbleLeftRightIcon, 
+  ArrowRightOnRectangleIcon, 
+  UsersIcon,
+  UserCircleIcon,
+  ChevronDownIcon,
+  Cog6ToothIcon
+} from '@heroicons/react/24/outline';
 
 const Layout = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -51,15 +74,68 @@ const Layout = () => {
               </div>
             </div>
             <div className="flex items-center">
-              <span className="text-sm text-gray-700 mr-4">
-                {user?.firstName} {user?.lastName} ({user?.role})
-              </span>
-              <button
-                onClick={handleLogout}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                <ArrowRightOnRectangleIcon className="h-5 w-5" />
-              </button>
+              <div className="relative" ref={dropdownRef}>
+                <button
+                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                  className="flex items-center text-sm text-gray-700 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 rounded-md px-3 py-2"
+                >
+                  <UserCircleIcon className="h-8 w-8 text-gray-400 mr-2" />
+                  <span className="mr-1">{user?.firstName} {user?.lastName}</span>
+                  <ChevronDownIcon className={`h-4 w-4 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {dropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+                    <div className="py-1">
+                      <div className="px-4 py-2 text-xs text-gray-500 border-b">
+                        Signed in as
+                        <div className="font-medium text-gray-900 truncate">{user?.email}</div>
+                        <div className="capitalize">{user?.role?.replace('_', ' ')}</div>
+                      </div>
+                      
+                      <Link
+                        to="/profile"
+                        onClick={() => setDropdownOpen(false)}
+                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        <Cog6ToothIcon className="h-4 w-4 mr-3" />
+                        Profile & Settings
+                      </Link>
+                      
+                      <Link
+                        to="/directory"
+                        onClick={() => setDropdownOpen(false)}
+                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        <UsersIcon className="h-4 w-4 mr-3" />
+                        User Directory
+                      </Link>
+                      
+                      {user?.role === 'admin' && (
+                        <Link
+                          to="/admin"
+                          onClick={() => setDropdownOpen(false)}
+                          className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 border-t"
+                        >
+                          <UserGroupIcon className="h-4 w-4 mr-3" />
+                          Admin Dashboard
+                        </Link>
+                      )}
+                      
+                      <button
+                        onClick={() => {
+                          setDropdownOpen(false);
+                          handleLogout();
+                        }}
+                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 border-t"
+                      >
+                        <ArrowRightOnRectangleIcon className="h-4 w-4 mr-3" />
+                        Sign Out
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
