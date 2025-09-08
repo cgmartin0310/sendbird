@@ -134,7 +134,7 @@ export const createUser = async (req: AuthRequest, res: Response): Promise<void>
 
     // Create user
     const result = await pool.query(
-      `INSERT INTO users (email, password_hash, first_name, last_name, role, organization_id)
+      `INSERT INTO users (email, password, first_name, last_name, role, organization_id)
        VALUES ($1, $2, $3, $4, $5, $6)
        RETURNING id, email, first_name, last_name, role, organization_id`,
       [email, passwordHash, firstName, lastName, role, organizationId || null]

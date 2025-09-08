@@ -33,7 +33,7 @@ async function createConsent() {
         
         if (existingConsent.rows.length === 0) {
           // Create consent
-          const result = await pool.query(
+          await pool.query(
             `INSERT INTO consents (
               patient_id, 
               organization_id, 
