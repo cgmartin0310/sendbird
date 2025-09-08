@@ -12,6 +12,7 @@ import AdminOrganizations from './pages/AdminOrganizations';
 import AdminConsents from './pages/AdminConsents';
 import AdminComplianceGroups from './pages/AdminComplianceGroups';
 import UserDebug from './pages/UserDebug';
+import UserDirectory from './pages/UserDirectory';
 import PrivateRoute from './components/PrivateRoute';
 import Layout from './components/Layout';
 import './App.css';
@@ -29,6 +30,7 @@ function App() {
             <Route path="patients" element={<Patients />} />
             <Route path="conversations" element={<Conversations />} />
             <Route path="chat/:channelUrl" element={<Chat />} />
+            <Route path="directory" element={<UserDirectory />} />
             <Route path="admin" element={<AdminDashboard />} />
             <Route path="admin/users" element={<AdminUsers />} />
             <Route path="admin/organizations" element={<AdminOrganizations />} />

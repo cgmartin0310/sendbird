@@ -104,7 +104,7 @@ const AdminDashboard = () => {
       {/* Quick Actions */}
       <div className="bg-white shadow rounded-lg p-6">
         <h2 className="text-lg font-medium text-gray-900 mb-4">Quick Actions</h2>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Link
             to="/admin/users"
             className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
@@ -122,6 +122,12 @@ const AdminDashboard = () => {
             className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700"
           >
             Manage Consents
+          </Link>
+          <Link
+            to="/directory"
+            className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+          >
+            User Directory
           </Link>
         </div>
       </div>
@@ -141,6 +147,9 @@ const AdminDashboard = () => {
           </Link>
           <Link to="/admin/compliance-groups" className="block text-blue-600 hover:text-blue-800">
             → Compliance Groups
+          </Link>
+          <Link to="/directory" className="block text-blue-600 hover:text-blue-800">
+            → User Directory
           </Link>
         </div>
       </div>

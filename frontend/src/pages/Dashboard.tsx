@@ -8,7 +8,8 @@ import {
   EyeIcon,
   DocumentTextIcon,
   UserIcon,
-  BuildingOfficeIcon
+  BuildingOfficeIcon,
+  UsersIcon
 } from '@heroicons/react/24/outline';
 import api from '../config/api';
 
@@ -158,6 +159,14 @@ const Dashboard = () => {
           >
             <ChatBubbleLeftRightIcon className="h-5 w-5 text-green-500 mr-3" />
             <span className="text-sm font-medium text-gray-700">Start Conversation</span>
+          </Link>
+          
+          <Link 
+            to="/directory" 
+            className="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            <UsersIcon className="h-5 w-5 text-indigo-500 mr-3" />
+            <span className="text-sm font-medium text-gray-700">User Directory</span>
           </Link>
           
           <Link 

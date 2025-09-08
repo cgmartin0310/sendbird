@@ -1,6 +1,6 @@
 import { Outlet, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { HomeIcon, UserGroupIcon, ChatBubbleLeftRightIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
+import { HomeIcon, UserGroupIcon, ChatBubbleLeftRightIcon, ArrowRightOnRectangleIcon, UsersIcon } from '@heroicons/react/24/outline';
 
 const Layout = () => {
   const { user, logout } = useAuth();
@@ -38,6 +38,10 @@ const Layout = () => {
                 <Link to="/conversations" className="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                   <ChatBubbleLeftRightIcon className="h-5 w-5 mr-1" />
                   Conversations
+                </Link>
+                <Link to="/directory" className="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                  <UsersIcon className="h-5 w-5 mr-1" />
+                  Directory
                 </Link>
                 {user?.role === 'admin' && (
                   <Link to="/admin" className="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">

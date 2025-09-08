@@ -79,7 +79,6 @@ export const listAllUsers = async (req: AuthRequest, res: Response): Promise<voi
       `SELECT id, email, first_name, last_name, role, organization_id
        FROM users 
        WHERE (is_external = false OR is_external IS NULL)
-       AND role IN ('care_team_member', 'admin')
        ORDER BY first_name, last_name`
     );
     
